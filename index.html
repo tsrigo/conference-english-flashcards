@@ -492,59 +492,17 @@
     .hidden { display: none; }
 
     .site-footer {
-      padding: 0 0 28px;
+      padding: 0 0 24px;
+      text-align: center;
     }
     .community-ad {
-      width: min(var(--page), calc(100% - 32px));
-      margin: 0 auto;
-      min-height: 58px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      background: #fff;
-      color: inherit;
+      color: var(--subtle);
+      font-size: 13px;
       text-decoration: none;
-      box-shadow: 0 1px 2px rgba(16,24,40,.04);
-      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+      transition: color .14s ease;
     }
     .community-ad:hover {
-      border-color: #b9d5ff;
-      box-shadow: 0 8px 22px rgba(16,24,40,.08);
-      transform: translateY(-1px);
-    }
-    .community-kicker {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 26px;
-      padding: 0 9px;
-      border-radius: 999px;
-      background: var(--orange-soft);
-      color: var(--orange);
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .community-title {
-      color: #101828;
-      font-size: 16px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .community-text {
       color: var(--muted);
-      font-size: 14px;
-    }
-    .community-ad::after {
-      content: "查看二维码";
-      margin-left: auto;
-      color: var(--blue);
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
     }
 
     @media (max-width: 1050px) {
@@ -569,8 +527,6 @@
       .side-column { grid-template-columns: 1fr; }
       .library-toolbar { grid-template-columns: 1fr; }
       .trash-item { grid-template-columns: 1fr; }
-      .community-ad { align-items: flex-start; flex-direction: column; }
-      .community-ad::after { margin-left: 0; }
     }
   </style>
 </head>
@@ -808,11 +764,7 @@
   </main>
 
   <footer class="site-footer">
-    <a class="community-ad" href="assets/images/QR.jpg" target="_blank" rel="noopener" aria-label="交流群，点击查看二维码">
-      <span class="community-kicker">广告</span>
-      <span class="community-title">交流群</span>
-      <span class="community-text">加入学习交流，点击打开二维码。</span>
-    </a>
+    <a class="community-ad" href="assets/images/QR.jpg" target="_blank" rel="noopener" aria-label="交流群，点击查看二维码">交流群</a>
   </footer>
 
   <input class="hidden" type="file" accept="application/json" id="importFile" />
