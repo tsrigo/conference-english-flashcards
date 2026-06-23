@@ -818,7 +818,10 @@
       toast: $('#toast')
     };
 
-    function today() { return Math.floor(Date.now() / MS_PER_DAY); }
+    function today() {
+      const now = new Date();
+      return Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / MS_PER_DAY);
+    }
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
     function escapeHTML(value) { return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'", '&#039;'); }
     function normalizeCard(card, index = 0) {
@@ -848,6 +851,21 @@
       });
     }
     function notify(message) { els.toast.textContent = message; els.toast.classList.add('is-visible'); clearTimeout(notify.timer); notify.timer = setTimeout(() => els.toast.classList.remove('is-visible'), 2200); }
+    function notifyStorageFailure(label) {
+      const now = Date.now();
+      if (notifyStorageFailure.last && now - notifyStorageFailure.last < 3000) return;
+      notifyStorageFailure.last = now;
+      notify(`${label}保存失败，请导出数据备份`);
+    }
+    function writeStorage(key, value, label) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch (error) {
+        notifyStorageFailure(label);
+        return false;
+      }
+    }
     function load() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -860,9 +878,9 @@
       try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (error) {}
       if (!settings.selectedId && deck[0]) settings.selectedId = deck[0].id;
     }
-    function saveDeck() { localStorage.setItem(STORAGE_KEY, JSON.stringify(deck)); }
-    function saveTrash() { localStorage.setItem(TRASH_KEY, JSON.stringify(trash)); }
-    function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+    function saveDeck() { return writeStorage(STORAGE_KEY, deck, '卡片数据'); }
+    function saveTrash() { return writeStorage(TRASH_KEY, trash, '垃圾站'); }
+    function saveSettings() { return writeStorage(SETTINGS_KEY, settings, '设置'); }
 
     function isNew(card) { return !Number(card.reps || 0); }
     function isDueReview(card) { return !isNew(card) && Number(card.due || 0) <= today(); }
@@ -1037,8 +1055,7 @@
       const data = readEditor(which);
       Object.assign(card, data);
       card.due = today() + Math.max(0, data.interval || 0);
-      saveDeck();
-      notify('已保存修改');
+      if (saveDeck()) notify('已保存修改');
       render();
     }
     function formatDateTime(value) {
@@ -1124,8 +1141,7 @@
       card.reps = Number(card.reps || 0) + 1;
       card.lastReviewed = today();
       settings.showAnswer = false;
-      saveDeck();
-      notify('已记录');
+      if (saveDeck()) notify('已记录');
       nextCard();
     }
     function getSpeakText(kind) {
@@ -1172,8 +1188,7 @@
       settings.view = 'library';
       settings.libraryEditOpen = true;
       settings.showAnswer = false;
-      saveDeck();
-      notify('已新增卡片');
+      if (saveDeck()) notify('已新增卡片');
       render();
     }
     function deleteCurrentCard() {
@@ -1188,9 +1203,9 @@
       const nextCards = settings.view === 'library' ? filteredLibraryCards() : studyCards();
       settings.selectedId = nextCards[0]?.id || deck[0]?.id || null;
       settings.showAnswer = false;
-      saveDeck();
-      saveTrash();
-      notify('已移入垃圾站');
+      const savedTrash = saveTrash();
+      const savedDeck = savedTrash && saveDeck();
+      if (savedDeck && savedTrash) notify('已移入垃圾站');
       render();
     }
     function nextAvailableId(preferred) {
@@ -1214,17 +1229,16 @@
       settings.selectedId = restored.id;
       settings.showAnswer = false;
       settings.view = 'library';
-      saveDeck();
-      saveTrash();
-      notify('已恢复卡片');
+      const savedDeck = saveDeck();
+      const savedTrash = savedDeck && saveTrash();
+      if (savedDeck && savedTrash) notify('已恢复卡片');
       render();
     }
     function emptyTrash() {
       if (!trash.length) return;
       if (!window.confirm('确定永久清空垃圾站吗？')) return;
       trash = [];
-      saveTrash();
-      notify('已清空垃圾站');
+      if (saveTrash()) notify('已清空垃圾站');
       render();
     }
     function exportDeck() {
@@ -1251,8 +1265,7 @@
           deck = imported.map(normalizeCard);
           settings.selectedId = deck[0]?.id || null;
           settings.showAnswer = false;
-          saveDeck();
-          notify(`已导入 ${deck.length} 张卡片`);
+          if (saveDeck()) notify(`已导入 ${deck.length} 张卡片`);
           render();
         } catch (error) { notify('导入失败：文件格式不正确'); }
         finally { els.importFile.value = ''; }
@@ -1264,8 +1277,7 @@
       deck = clone(defaultCards).map(normalizeCard);
       settings.selectedId = deck[0]?.id || null;
       settings.showAnswer = false;
-      saveDeck();
-      notify('已恢复默认卡片');
+      if (saveDeck()) notify('已恢复默认卡片');
       render();
     }
     function resetProgress() {
@@ -1273,8 +1285,7 @@
       deck.forEach(card => { card.due = 0; card.interval = 0; card.ease = 2.5; card.reps = 0; card.lapses = 0; card.lastReviewed = null; });
       settings.selectedId = deck[0]?.id || null;
       settings.showAnswer = false;
-      saveDeck();
-      notify('已重置学习进度');
+      if (saveDeck()) notify('已重置学习进度');
       render();
     }
     function bindEvents() {
