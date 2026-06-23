@@ -313,6 +313,8 @@
     .btn.small { min-height: 34px; padding: 0 12px; border-radius: 7px; font-size: 13px; }
     .btn.danger { color: var(--red); border-color: #f1b5b0; background: #fff; }
     .btn.soft { background: #f7f9fc; }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .btn:disabled:hover { background: #fff; border-color: var(--line-strong, #c7d0dd); }
     .grade.again { color: var(--red); background: var(--red-soft); border-color: #f5bbb7; }
     .grade.hard { color: var(--orange); background: var(--orange-soft); border-color: #f7d39d; }
     .grade.good { color: var(--green); background: var(--green-soft); border-color: #b7e6ce; }
@@ -419,6 +421,57 @@
     }
     .rule-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     .rule-list li { margin: 6px 0; }
+    .trash-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .trash-head h2 { margin: 0; }
+    .trash-count { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .trash-list {
+      display: grid;
+      gap: 8px;
+      max-height: 250px;
+      margin-top: 12px;
+      overflow: auto;
+    }
+    .trash-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 56px;
+      padding: 10px 11px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+    .trash-title {
+      color: #1d2939;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trash-meta {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trash-empty {
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #f8fafc;
+    }
 
     .toast {
       position: fixed;
@@ -515,6 +568,7 @@
       .form-grid { grid-template-columns: 1fr; }
       .side-column { grid-template-columns: 1fr; }
       .library-toolbar { grid-template-columns: 1fr; }
+      .trash-item { grid-template-columns: 1fr; }
       .community-ad { align-items: flex-start; flex-direction: column; }
       .community-ad::after { margin-left: 0; }
     }
@@ -740,8 +794,14 @@
         </section>
         <section class="settings-card">
           <h2>数据维护</h2>
-          <p class="explain">恢复默认会覆盖当前本地卡片。删除或大改之前，先导出数据最稳。</p>
+          <p class="explain">恢复默认会覆盖当前本地卡片。大改之前，先导出数据最稳。</p>
           <div class="action-row" style="margin-top:14px;"><button class="btn" id="resetProgressBtn">只重置学习进度</button><button class="btn danger" id="resetBtn2">恢复默认卡片</button></div>
+        </section>
+        <section class="settings-card">
+          <div class="trash-head"><h2>垃圾站</h2><span class="trash-count" id="trashCount">0 张</span></div>
+          <p class="explain">删除卡片会直接移入这里，可以单张恢复。</p>
+          <div class="trash-list" id="trashList"></div>
+          <div class="action-row" style="margin-top:14px;"><button class="btn danger" id="emptyTrashBtn">清空垃圾站</button></div>
         </section>
       </div>
     </section>
@@ -762,6 +822,7 @@
   <script>
     const STORAGE_KEY = 'conference_english_public_cards_v7';
     const SETTINGS_KEY = 'conference_english_public_settings_v7';
+    const TRASH_KEY = 'conference_english_public_trash_v1';
     const MS_PER_DAY = 86400000;
     const defaultCards = JSON.parse(document.getElementById('defaultCards').textContent);
     const TYPE_OPTIONS = ['中译英', '场景题', '短语', '词汇', '自定义'];
@@ -769,6 +830,7 @@
     const TAG_NAMES = { intro: '介绍', research: '研究', poster: '海报', question: '提问', answer: '回答', repair: '救场', oral: '报告', listening: '听力', scenario: '场景', social: '社交', vocab: '词汇', chunk: '短语', pitch: '陈述', safe: '安全表达', transition: '过渡' };
 
     let deck = [];
+    let trash = [];
     let settings = {
       view: 'study', search: '', category: 'all', type: 'all', dueOnly: false, selectedId: null,
       showAnswer: false, editOpen: false, libraryEditOpen: false,
@@ -788,6 +850,7 @@
       searchInput: $('#searchInput'), categoryFilter: $('#categoryFilter'), typeFilter: $('#typeFilter'), dueOnly: $('#dueOnly'),
       saveStudyEditBtn: $('#saveStudyEditBtn'), saveLibraryEditBtn: $('#saveLibraryEditBtn'), deleteStudyCardBtn: $('#deleteStudyCardBtn'), deleteLibraryCardBtn: $('#deleteLibraryCardBtn'),
       addCardTopBtn: $('#addCardTopBtn'), exportBtn: $('#exportBtn'), importBtn: $('#importBtn'), importFile: $('#importFile'), resetBtn: $('#resetBtn'), resetBtn2: $('#resetBtn2'), resetProgressBtn: $('#resetProgressBtn'),
+      trashCount: $('#trashCount'), trashList: $('#trashList'), emptyTrashBtn: $('#emptyTrashBtn'),
       voiceSelect: $('#voiceSelect'), rateRange: $('#rateRange'), rateValue: $('#rateValue'), pitchRange: $('#pitchRange'), pitchValue: $('#pitchValue'), autoSpeakAnswer: $('#autoSpeakAnswer'), testVoiceBtn: $('#testVoiceBtn'), studyOrderSelect: $('#studyOrderSelect'), newLimitSelect: $('#newLimitSelect'),
       toast: $('#toast')
     };
@@ -814,16 +877,28 @@
         created: card.created || new Date().toISOString()
       };
     }
+    function normalizeTrashItem(item, index = 0) {
+      return Object.assign(normalizeCard(item, index), {
+        trashId: item.trashId || `trash-${Date.now()}-${index}`,
+        originalId: item.originalId || item.id || `restored-${index}`,
+        deletedAt: item.deletedAt || new Date().toISOString()
+      });
+    }
     function notify(message) { els.toast.textContent = message; els.toast.classList.add('is-visible'); clearTimeout(notify.timer); notify.timer = setTimeout(() => els.toast.classList.remove('is-visible'), 2200); }
     function load() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         deck = (raw ? JSON.parse(raw) : clone(defaultCards)).map(normalizeCard);
       } catch (error) { deck = clone(defaultCards).map(normalizeCard); }
+      try {
+        const rawTrash = localStorage.getItem(TRASH_KEY);
+        trash = (rawTrash ? JSON.parse(rawTrash) : []).map(normalizeTrashItem);
+      } catch (error) { trash = []; }
       try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (error) {}
       if (!settings.selectedId && deck[0]) settings.selectedId = deck[0].id;
     }
     function saveDeck() { localStorage.setItem(STORAGE_KEY, JSON.stringify(deck)); }
+    function saveTrash() { localStorage.setItem(TRASH_KEY, JSON.stringify(trash)); }
     function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
     function isNew(card) { return !Number(card.reps || 0); }
@@ -1003,6 +1078,12 @@
       notify('已保存修改');
       render();
     }
+    function formatDateTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '删除时间未知';
+      const pad = (num) => String(num).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
     function renderSettings() {
       els.rateRange.value = settings.ttsRate;
       els.rateValue.textContent = Number(settings.ttsRate).toFixed(2);
@@ -1013,11 +1094,21 @@
       els.newLimitSelect.value = String(settings.newLimit || 0);
       populateVoices();
     }
+    function renderTrash() {
+      els.trashCount.textContent = `${trash.length} 张`;
+      els.emptyTrashBtn.disabled = !trash.length;
+      if (!trash.length) {
+        els.trashList.innerHTML = '<div class="trash-empty">垃圾站为空。</div>';
+        return;
+      }
+      els.trashList.innerHTML = trash.map(item => `<div class="trash-item"><div><div class="trash-title">${escapeHTML(item.front || '未填写题面')}</div><div class="trash-meta">${escapeHTML(item.category)} · ${escapeHTML(item.type)} · ${formatDateTime(item.deletedAt)}</div></div><button class="btn small" data-restore-trash="${escapeHTML(item.trashId)}">恢复</button></div>`).join('');
+    }
     function render() {
       renderSummary();
       renderStudy();
       renderLibrary();
       renderSettings();
+      renderTrash();
       setView(settings.view, false);
       saveSettings();
     }
@@ -1125,11 +1216,52 @@
     function deleteCurrentCard() {
       const card = getSelectedCard();
       if (!card) return;
-      if (!window.confirm('确定删除这张卡片吗？建议先导出数据备份。')) return;
+      const removed = clone(card);
+      removed.trashId = `trash-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      removed.originalId = card.id;
+      removed.deletedAt = new Date().toISOString();
+      trash.unshift(removed);
       deck = deck.filter(item => item.id !== card.id);
-      settings.selectedId = deck[0]?.id || null;
+      const nextCards = settings.view === 'library' ? filteredLibraryCards() : studyCards();
+      settings.selectedId = nextCards[0]?.id || deck[0]?.id || null;
+      settings.showAnswer = false;
       saveDeck();
-      notify('已删除卡片');
+      saveTrash();
+      notify('已移入垃圾站');
+      render();
+    }
+    function nextAvailableId(preferred) {
+      const base = preferred || `restored-${Date.now()}`;
+      if (!deck.some(card => card.id === base)) return base;
+      let count = 1;
+      let candidate = `${base}-restored`;
+      while (deck.some(card => card.id === candidate)) {
+        count += 1;
+        candidate = `${base}-restored-${count}`;
+      }
+      return candidate;
+    }
+    function restoreTrashItem(trashId) {
+      const index = trash.findIndex(item => item.trashId === trashId);
+      if (index < 0) return;
+      const item = trash.splice(index, 1)[0];
+      const restored = normalizeCard(item);
+      restored.id = nextAvailableId(item.originalId || item.id);
+      deck.unshift(restored);
+      settings.selectedId = restored.id;
+      settings.showAnswer = false;
+      settings.view = 'library';
+      saveDeck();
+      saveTrash();
+      notify('已恢复卡片');
+      render();
+    }
+    function emptyTrash() {
+      if (!trash.length) return;
+      if (!window.confirm('确定永久清空垃圾站吗？')) return;
+      trash = [];
+      saveTrash();
+      notify('已清空垃圾站');
       render();
     }
     function exportDeck() {
@@ -1219,6 +1351,12 @@
       els.resetBtn.addEventListener('click', resetDeck);
       els.resetBtn2.addEventListener('click', resetDeck);
       els.resetProgressBtn.addEventListener('click', resetProgress);
+      els.trashList.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-restore-trash]');
+        if (!button) return;
+        restoreTrashItem(button.dataset.restoreTrash);
+      });
+      els.emptyTrashBtn.addEventListener('click', emptyTrash);
       els.voiceSelect.addEventListener('change', event => { settings.ttsVoiceURI = event.target.value; saveSettings(); });
       els.rateRange.addEventListener('input', event => { settings.ttsRate = Number(event.target.value); els.rateValue.textContent = settings.ttsRate.toFixed(2); saveSettings(); });
       els.pitchRange.addEventListener('input', event => { settings.ttsPitch = Number(event.target.value); els.pitchValue.textContent = settings.ttsPitch.toFixed(2); saveSettings(); });
