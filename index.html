@@ -504,6 +504,11 @@
     .community-ad:hover {
       color: var(--muted);
     }
+    .footer-separator {
+      margin: 0 7px;
+      color: var(--subtle);
+      font-size: 13px;
+    }
 
     @media (max-width: 1050px) {
       .study-grid { grid-template-columns: 1fr; }
@@ -764,7 +769,9 @@
   </main>
 
   <footer class="site-footer">
-    <a class="community-ad" href="assets/images/QR.jpg" target="_blank" rel="noopener" aria-label="交流群，点击查看二维码">交流群</a>
+    <a class="community-ad" href="assets/images/QR.jpg" target="_blank" rel="noopener" aria-label="交流群二维码">交流群</a>
+    <span class="footer-separator" aria-hidden="true">·</span>
+    <a class="community-ad" href="https://github.com/tsrigo/conference-english-flashcards" target="_blank" rel="noopener">GitHub</a>
   </footer>
 
   <input class="hidden" type="file" accept="application/json" id="importFile" />
