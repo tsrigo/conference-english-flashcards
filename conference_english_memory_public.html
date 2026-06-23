@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f6f9" />
+  <title>学术会议英语记忆卡</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --bar: #e9edf2;
+      --card: #ffffff;
+      --card-soft: #f8fafc;
+      --text: #172033;
+      --text-soft: #344054;
+      --muted: #667085;
+      --subtle: #98a2b3;
+      --line: #d9e0ea;
+      --line-soft: #e7ecf3;
+      --blue: #1677ff;
+      --blue-hover: #0f64d8;
+      --blue-soft: #eaf3ff;
+      --green: #129061;
+      --green-soft: #e8f7ef;
+      --orange: #a45c00;
+      --orange-soft: #fff4e5;
+      --red: #b42318;
+      --red-soft: #fff1f0;
+      --radius: 10px;
+      --radius-sm: 7px;
+      --shadow: 0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.05);
+      --page: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 15px;
+      line-height: 1.48;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      background: var(--bar);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      width: min(var(--page), calc(100% - 32px));
+      height: 56px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 28px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #101828;
+      font-weight: 700;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+    .brand-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 4px solid #24b5ff;
+      display: inline-block;
+      position: relative;
+      background: #fff;
+    }
+    .brand-dot::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 999px;
+      background: #24b5ff;
+    }
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-tab {
+      border: 0;
+      background: transparent;
+      color: #667085;
+      padding: 8px 14px;
+      border-radius: 8px;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-tab:hover { background: rgba(255,255,255,.55); color: #344054; }
+    .nav-tab.is-active {
+      background: #fff;
+      color: var(--blue);
+      box-shadow: inset 0 0 0 1px #d7e6ff;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page {
+      width: min(var(--page), calc(100% - 32px));
+      margin: 22px auto 36px;
+    }
+    .page-title { margin: 0 0 4px; font-size: 25px; letter-spacing: -.02em; line-height: 1.25; }
+    .page-subtitle { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+
+    .deck-card,
+    .review-card,
+    .panel,
+    .editor-card,
+    .library-card,
+    .settings-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .deck-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+    .deck-title { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .deck-meta { color: var(--muted); font-size: 13px; }
+    .summary-pills { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .summary-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #344054;
+      font-size: 13px;
+    }
+    .summary-pill strong { color: #101828; font-size: 15px; }
+
+    .view { display: none; }
+    .view.is-active { display: block; }
+    .study-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .study-grid > div:first-child {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .side-column { display: grid; gap: 12px; align-content: start; }
+
+    .review-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 420px;
+    }
+    .card-head {
+      min-height: 58px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: var(--card-soft);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f7f9fc;
+      color: #475467;
+      font-size: 12px;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .tag.new { background: var(--blue-soft); border-color: #cfe1ff; color: #0f5fd6; }
+    .tag.due { background: var(--orange-soft); border-color: #f7d39d; color: var(--orange); }
+    .tag.future { background: var(--green-soft); border-color: #b7e6ce; color: var(--green); }
+
+    .card-body {
+      padding: 28px 28px 22px;
+      min-height: 360px;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .label {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .prompt-text {
+      width: 100%;
+      max-width: none;
+      color: #1d2939;
+      font-size: clamp(26px, 2.45vw, 34px);
+      line-height: 1.34;
+      letter-spacing: -.018em;
+      font-weight: 700;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+    .prompt-text.long {
+      font-size: clamp(22px, 2vw, 28px);
+      line-height: 1.42;
+      max-width: none;
+    }
+    .answer-box {
+      display: none;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .answer-box.is-visible { display: block; }
+    .answer-text {
+      max-width: 920px;
+      color: #10213d;
+      font-size: clamp(20px, 1.85vw, 24px);
+      line-height: 1.45;
+      font-weight: 600;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+    .note-box {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #d7e6ff;
+      border-radius: 8px;
+      background: #f7fbff;
+      color: #475467;
+      font-size: 14px;
+    }
+    .note-box.is-visible { display: block; }
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 28px;
+    }
+    .action-row, .grade-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .grade-row { display: none; }
+    .grade-row.is-visible { display: flex; }
+
+    .btn {
+      height: 40px;
+      min-height: 40px;
+      padding: 0 15px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong, #c7d0dd);
+      background: #fff;
+      color: #1d2939;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      line-height: 1.2;
+      white-space: nowrap;
+      text-decoration: none;
+      vertical-align: middle;
+      transition: background .14s ease, border-color .14s ease, color .14s ease;
+    }
+    .btn:hover { background: #f8fbff; border-color: #aac8f7; }
+    .btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .btn.primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); }
+    .btn.small { min-height: 34px; padding: 0 12px; border-radius: 7px; font-size: 13px; }
+    .btn.danger { color: var(--red); border-color: #f1b5b0; background: #fff; }
+    .btn.soft { background: #f7f9fc; }
+    .grade.again { color: var(--red); background: var(--red-soft); border-color: #f5bbb7; }
+    .grade.hard { color: var(--orange); background: var(--orange-soft); border-color: #f7d39d; }
+    .grade.good { color: var(--green); background: var(--green-soft); border-color: #b7e6ce; }
+    .grade.easy { color: var(--blue-hover); background: var(--blue-soft); border-color: #cfe1ff; }
+
+    .panel { padding: 14px; }
+    .panel h2, .settings-card h2 { margin: 0 0 10px; font-size: 16px; line-height: 1.3; }
+    .stat-list { display: grid; gap: 8px; }
+    .stat-item {
+      min-height: 45px;
+      padding: 8px 11px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .stat-item span { color: var(--muted); font-size: 13px; }
+    .stat-item strong { font-size: 19px; line-height: 1; color: #101828; }
+    .tips { display: grid; gap: 6px; color: var(--muted); font-size: 13px; line-height: 1.42; }
+
+    .editor-card {
+      display: none;
+      margin-top: 16px;
+      padding: 18px;
+    }
+    .editor-card.is-visible { display: block; }
+    .editor-title { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 14px; }
+    .editor-title strong { font-size: 16px; }
+    .editor-title p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    label { display: block; margin-bottom: 6px; color: #475467; font-size: 13px; font-weight: 600; }
+    input[type="text"], input[type="search"], select, textarea {
+      width: 100%;
+      min-height: 40px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    input:focus, select:focus, textarea:focus {
+      border-color: #9fc1ff;
+      box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    }
+    .custom-field { display: none; margin-top: 8px; }
+    .custom-field.is-visible { display: block; }
+
+    .library-toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 160px 150px auto auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+    .check-line { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; min-height: 40px; }
+    .library-card { overflow: hidden; }
+    .library-head, .library-row {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1.65fr) minmax(0, 1.55fr) 120px 110px 110px;
+      gap: 12px;
+      align-items: center;
+    }
+    .library-head {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--card-soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .library-list { max-height: 580px; overflow: auto; }
+    .library-row {
+      width: 100%;
+      padding: 13px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fff;
+      text-align: left;
+    }
+    .library-row:hover { background: #f8fbff; }
+    .library-row.is-selected { background: #eef5ff; }
+    .row-id { color: var(--subtle); font-size: 12px; }
+    .row-main { min-width: 0; }
+    .row-title { color: #1d2939; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row-sub { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .empty { padding: 42px 18px; text-align: center; color: var(--muted); }
+
+    .settings-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+    .settings-card { padding: 18px; }
+    .setting-row { margin-bottom: 14px; }
+    .range-row { display: grid; grid-template-columns: 1fr 54px; gap: 10px; align-items: center; }
+    input[type="range"] { width: 100%; }
+    .explain {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .rule-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    .rule-list li { margin: 6px 0; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(10px);
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #111827;
+      color: #fff;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .16s ease;
+      z-index: 20;
+    }
+    .toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .hidden { display: none; }
+
+    .site-footer {
+      padding: 0 0 28px;
+    }
+    .community-ad {
+      width: min(var(--page), calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 58px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      box-shadow: 0 1px 2px rgba(16,24,40,.04);
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .community-ad:hover {
+      border-color: #b9d5ff;
+      box-shadow: 0 8px 22px rgba(16,24,40,.08);
+      transform: translateY(-1px);
+    }
+    .community-kicker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: var(--orange-soft);
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .community-title {
+      color: #101828;
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .community-text {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .community-ad::after {
+      content: "查看二维码";
+      margin-left: auto;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1050px) {
+      .study-grid { grid-template-columns: 1fr; }
+      .side-column { grid-template-columns: 1fr 1fr; }
+      .library-toolbar { grid-template-columns: 1fr 1fr; }
+      .library-head, .library-row { grid-template-columns: 64px minmax(0,1fr); }
+      .library-head > :nth-child(n+3), .library-row > :nth-child(n+3) { display: none; }
+      .settings-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 740px) {
+      .topbar-inner { height: auto; padding: 10px 0; grid-template-columns: 1fr; gap: 10px; }
+      .top-actions { justify-content: flex-start; }
+      .deck-card { grid-template-columns: 1fr; }
+      .summary-pills { justify-content: flex-start; }
+      .card-head { align-items: flex-start; flex-direction: column; }
+      .review-card { min-height: 380px; }
+      .card-body { padding: 20px; min-height: 300px; }
+      .prompt-text { font-size: 27px; }
+      .answer-text { font-size: 21px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .side-column { grid-template-columns: 1fr; }
+      .library-toolbar { grid-template-columns: 1fr; }
+      .community-ad { align-items: flex-start; flex-direction: column; }
+      .community-ad::after { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span><span>记忆卡</span></div>
+      <nav class="nav-tabs" aria-label="主导航">
+        <button class="nav-tab is-active" data-view-tab="study">学习</button>
+        <button class="nav-tab" data-view-tab="library">卡片库</button>
+        <button class="nav-tab" data-view-tab="settings">设置</button>
+      </nav>
+      <div class="top-actions">
+        <button class="btn small" id="addCardTopBtn">新增卡片</button>
+        <button class="btn small" id="exportBtn">导出数据</button>
+        <button class="btn small" id="importBtn">导入数据</button>
+        <button class="btn small danger" id="resetBtn">恢复默认</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1 class="page-title">学术会议英语记忆卡</h1>
+    <p class="page-subtitle">面向第一次国际学术会议的通用场景：自我介绍、研究速讲、海报交流、问答、社交与常用表达。默认卡片不包含个人信息。</p>
+
+    <section class="deck-card">
+      <div>
+        <div class="deck-title">默认牌组</div>
+        <div class="deck-meta" id="deckMeta">正在载入卡片</div>
+      </div>
+      <div class="summary-pills">
+        <div class="summary-pill">新卡 <strong id="deckNew">0</strong></div>
+        <div class="summary-pill">到期复习 <strong id="deckDue">0</strong></div>
+        <div class="summary-pill">今天已学 <strong id="deckToday">0</strong></div>
+      </div>
+    </section>
+
+    <section class="view is-active" id="studyView">
+      <div class="study-grid">
+        <div>
+          <article class="review-card">
+            <header class="card-head">
+              <div class="card-meta" id="studyMeta"></div>
+              <button class="btn small" id="toggleEditBtn">开启编辑</button>
+            </header>
+            <div class="card-body">
+              <div class="label" id="promptLabel">题目</div>
+              <div class="prompt-text" id="promptText">正在载入卡片…</div>
+              <section class="answer-box" id="answerBox">
+                <div class="label">参考答案</div>
+                <div class="answer-text" id="answerText"></div>
+                <div class="note-box" id="noteBox"><div class="label">补充说明</div><div id="noteText"></div></div>
+              </section>
+              <div class="card-actions">
+                <div class="action-row">
+                  <button class="btn primary" id="revealBtn">显示答案</button>
+                  <button class="btn" id="speakPromptBtn">朗读题目</button>
+                  <button class="btn" id="speakAnswerBtn">朗读答案</button>
+                  <button class="btn" id="copyAnswerBtn">复制答案</button>
+                  <button class="btn" id="nextBtn">下一张</button>
+                </div>
+                <div class="grade-row" id="gradeRow">
+                  <button class="btn grade again" data-grade="again">忘了</button>
+                  <button class="btn grade hard" data-grade="hard">勉强记起</button>
+                  <button class="btn grade good" data-grade="good">正常掌握</button>
+                  <button class="btn grade easy" data-grade="easy">很熟</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <section class="editor-card" id="studyEditor">
+            <div class="editor-title">
+              <div><strong>编辑当前卡片</strong><p>尽量用下拉选择；需要自由填写的地方再手动输入。</p></div>
+            </div>
+            <div class="form-grid" data-editor="study">
+              <div>
+                <label>分类</label>
+                <select data-field="categorySelect"></select>
+                <input class="custom-field" data-field="categoryCustom" type="text" placeholder="输入自定义分类" />
+              </div>
+              <div>
+                <label>类型</label>
+                <select data-field="typeSelect"></select>
+                <input class="custom-field" data-field="typeCustom" type="text" placeholder="输入自定义类型" />
+              </div>
+              <div class="full">
+                <label>题面</label>
+                <textarea data-field="front"></textarea>
+              </div>
+              <div class="full">
+                <label>答案</label>
+                <textarea data-field="answer"></textarea>
+              </div>
+              <div class="full">
+                <label>说明</label>
+                <textarea data-field="note"></textarea>
+              </div>
+              <div>
+                <label>标签</label>
+                <input data-field="tags" type="text" placeholder="用逗号分隔" />
+              </div>
+              <div>
+                <label>复习间隔</label>
+                <select data-field="interval">
+                  <option value="0">今天</option><option value="1">1 天</option><option value="2">2 天</option><option value="3">3 天</option><option value="7">7 天</option><option value="14">14 天</option><option value="30">30 天</option><option value="90">90 天</option>
+                </select>
+              </div>
+            </div>
+            <div class="action-row" style="margin-top:16px;">
+              <button class="btn primary" id="saveStudyEditBtn">保存修改</button>
+              <button class="btn danger" id="deleteStudyCardBtn">删除卡片</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-column">
+          <section class="panel">
+            <h2>当前进度</h2>
+            <div class="stat-list">
+              <div class="stat-item"><span>总卡片</span><strong id="statTotal">0</strong></div>
+              <div class="stat-item"><span>新卡片</span><strong id="statNew">0</strong></div>
+              <div class="stat-item"><span>到期复习</span><strong id="statDue">0</strong></div>
+              <div class="stat-item"><span>今天已学</span><strong id="statToday">0</strong></div>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>快捷说明</h2>
+            <div class="tips">
+              <div>空格或回车：显示或收起答案</div>
+              <div>数字 1 到 4：记录掌握程度</div>
+              <div>N：切到下一张卡片</div>
+              <div>E：开启或关闭编辑</div>
+              <div>先回忆，再显示答案，最后自评。</div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="libraryView">
+      <div class="library-toolbar">
+        <div>
+          <label for="searchInput">搜索卡片</label>
+          <input type="search" id="searchInput" placeholder="输入中文、英文、分类或标签" />
+        </div>
+        <div><label for="categoryFilter">分类</label><select id="categoryFilter"></select></div>
+        <div><label for="typeFilter">类型</label><select id="typeFilter"></select></div>
+        <label class="check-line"><input type="checkbox" id="dueOnly" /> 只看到期复习</label>
+        <button class="btn" id="libraryEditToggleBtn">开启编辑</button>
+      </div>
+      <section class="library-card">
+        <div class="library-head"><div>编号</div><div>题面</div><div>答案</div><div>分类</div><div>类型</div><div>状态</div></div>
+        <div class="library-list" id="libraryList"></div>
+      </section>
+      <section class="editor-card" id="libraryEditor">
+        <div class="editor-title"><div><strong>编辑卡片</strong><p>编辑开关打开后，点击表格中的任意一行即可修改。</p></div></div>
+        <div class="form-grid" data-editor="library">
+          <div>
+            <label>分类</label>
+            <select data-field="categorySelect"></select>
+            <input class="custom-field" data-field="categoryCustom" type="text" placeholder="输入自定义分类" />
+          </div>
+          <div>
+            <label>类型</label>
+            <select data-field="typeSelect"></select>
+            <input class="custom-field" data-field="typeCustom" type="text" placeholder="输入自定义类型" />
+          </div>
+          <div class="full"><label>题面</label><textarea data-field="front"></textarea></div>
+          <div class="full"><label>答案</label><textarea data-field="answer"></textarea></div>
+          <div class="full"><label>说明</label><textarea data-field="note"></textarea></div>
+          <div><label>标签</label><input data-field="tags" type="text" placeholder="用逗号分隔" /></div>
+          <div>
+            <label>复习间隔</label>
+            <select data-field="interval"><option value="0">今天</option><option value="1">1 天</option><option value="2">2 天</option><option value="3">3 天</option><option value="7">7 天</option><option value="14">14 天</option><option value="30">30 天</option><option value="90">90 天</option></select>
+          </div>
+        </div>
+        <div class="action-row" style="margin-top:16px;"><button class="btn primary" id="saveLibraryEditBtn">保存修改</button><button class="btn danger" id="deleteLibraryCardBtn">删除卡片</button></div>
+      </section>
+    </section>
+
+    <section class="view" id="settingsView">
+      <div class="settings-grid">
+        <section class="settings-card">
+          <h2>朗读设置</h2>
+          <div class="setting-row">
+            <label for="voiceSelect">朗读声音</label>
+            <select id="voiceSelect"><option value="">使用浏览器默认声音</option></select>
+          </div>
+          <div class="setting-row">
+            <label for="rateRange">语速</label>
+            <div class="range-row"><input type="range" id="rateRange" min="0.65" max="1.25" step="0.05" /><span id="rateValue">0.90</span></div>
+          </div>
+          <div class="setting-row">
+            <label for="pitchRange">音调</label>
+            <div class="range-row"><input type="range" id="pitchRange" min="0.7" max="1.3" step="0.05" /><span id="pitchValue">1.00</span></div>
+          </div>
+          <label class="check-line"><input type="checkbox" id="autoSpeakAnswer" /> 显示答案后自动朗读答案</label>
+          <div class="action-row" style="margin-top:14px;"><button class="btn" id="testVoiceBtn">试听</button></div>
+        </section>
+        <section class="settings-card">
+          <h2>学习设置</h2>
+          <div class="setting-row">
+            <label for="studyOrderSelect">出卡顺序</label>
+            <select id="studyOrderSelect"><option value="dueFirst">到期复习优先，然后新卡</option><option value="newFirst">新卡优先，然后到期复习</option><option value="original">按卡片原顺序</option></select>
+          </div>
+          <div class="setting-row">
+            <label for="newLimitSelect">每日新卡建议量</label>
+            <select id="newLimitSelect"><option value="0">不限制</option><option value="10">10 张</option><option value="20">20 张</option><option value="30">30 张</option><option value="50">50 张</option></select>
+          </div>
+          <p class="explain">这个页面只在浏览器本地保存数据。改过卡片后，建议定期导出数据备份。</p>
+        </section>
+        <section class="settings-card">
+          <h2>记忆规则</h2>
+          <ul class="rule-list">
+            <li>先看题面主动回忆，再显示答案，不在显示答案前打分。</li>
+            <li>新卡和到期复习分开统计，避免所有新卡都被算作到期。</li>
+            <li>“忘了”今天再来；“勉强记起”给较短间隔；“正常掌握”和“很熟”逐步拉长间隔。</li>
+            <li>每次评分都会记录今天已学，并更新下一次出现时间。</li>
+          </ul>
+        </section>
+        <section class="settings-card">
+          <h2>数据维护</h2>
+          <p class="explain">恢复默认会覆盖当前本地卡片。删除或大改之前，先导出数据最稳。</p>
+          <div class="action-row" style="margin-top:14px;"><button class="btn" id="resetProgressBtn">只重置学习进度</button><button class="btn danger" id="resetBtn2">恢复默认卡片</button></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="community-ad" href="assets/images/QR.jpg" target="_blank" rel="noopener" aria-label="交流群，点击查看二维码">
+      <span class="community-kicker">广告</span>
+      <span class="community-title">交流群</span>
+      <span class="community-text">加入学习交流，点击打开二维码。</span>
+    </a>
+  </footer>
+
+  <input class="hidden" type="file" accept="application/json" id="importFile" />
+  <div class="toast" id="toast"></div>
+
+  <script id="defaultCards" type="application/json">[{"id": "p001", "category": "自我介绍", "type": "中译英", "front": "你好，我是 [姓名]，[机构] 的博士生/研究生。", "answer": "Hi, I’m [Name], a PhD student / graduate student at [Institution].", "note": "替换方括号内容即可；第一次见面不用讲太多，清楚比完整更重要。", "tags": ["intro", "template"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p002", "category": "自我介绍", "type": "中译英", "front": "我主要研究 [研究领域]。", "answer": "I mainly work on [research area].", "note": "用于最短自我介绍。把研究领域压缩成 3–6 个英文词。", "tags": ["intro", "research"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p003", "category": "自我介绍", "type": "中译英", "front": "我的研究关注 [具体问题]。", "answer": "My work focuses on [specific problem].", "note": "focuses on 后面接名词短语或动名词，不要接完整句子。", "tags": ["intro", "research"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p004", "category": "自我介绍", "type": "中译英", "front": "我对 [主题] 特别感兴趣。", "answer": "I’m especially interested in [topic].", "note": "适合在寒暄中自然引出学术兴趣。", "tags": ["intro", "social"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p005", "category": "自我介绍", "type": "中译英", "front": "这是我第一次参加这个会议。", "answer": "This is my first time attending this conference.", "note": "第一次参会可以主动说出来，对方通常会更愿意解释和引导。", "tags": ["intro", "conference"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p006", "category": "自我介绍", "type": "中译英", "front": "我的项目目前还在早期阶段。", "answer": "My project is still at an early stage.", "note": "被追问太细时很好用：降低期待，同时保留讨论空间。", "tags": ["intro", "safe"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p007", "category": "自我介绍", "type": "中译英", "front": "我想了解更多这个方向的工作。", "answer": "I’d like to learn more about work in this area.", "note": "用于表达学习意愿，也可以引出“你有什么推荐吗”。", "tags": ["intro", "followup"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p008", "category": "自我介绍", "type": "中译英", "front": "很高兴认识你。", "answer": "It’s nice to meet you.", "note": "最常用的结尾或开场句，语速放慢即可。", "tags": ["intro", "social"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p009", "category": "研究速讲", "type": "中译英", "front": "这项工作主要关注 [主题]。", "answer": "This work focuses on [topic].", "note": "30 秒研究介绍的第一句。先把 topic 写成一个名词短语。", "tags": ["pitch", "template"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p010", "category": "研究速讲", "type": "中译英", "front": "这个问题很重要，因为 [原因]。", "answer": "This problem is important because [reason].", "note": "不要解释太长；先给一个最直接的原因。", "tags": ["pitch", "motivation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p011", "category": "研究速讲", "type": "中译英", "front": "现有方法通常 [局限]。", "answer": "Existing methods often [limitation].", "note": "用于引出 gap。可以接 miss、ignore、rely on、struggle with 等动词。", "tags": ["pitch", "gap"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p012", "category": "研究速讲", "type": "中译英", "front": "我们提出一种方法来 [目标]。", "answer": "We propose a method to [goal].", "note": "propose 后面不要堆太多名词，先讲“用来做什么”。", "tags": ["pitch", "method"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p013", "category": "研究速讲", "type": "中译英", "front": "核心想法是 [一句话想法]。", "answer": "The key idea is to [one-sentence idea].", "note": "把复杂方法压成一个动作：use / compare / measure / identify / predict。", "tags": ["pitch", "method"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p014", "category": "研究速讲", "type": "中译英", "front": "我们使用 [数据/方法] 来 [做什么]。", "answer": "We use [data/method] to [do something].", "note": "适合解释方法细节；不要一次讲多个步骤。", "tags": ["pitch", "method"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p015", "category": "研究速讲", "type": "中译英", "front": "和已有工作相比，主要区别是 [区别]。", "answer": "Compared with previous work, the main difference is [difference].", "note": "被问 novelty 时使用；先说“区别”，再补例子。", "tags": ["pitch", "novelty"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p016", "category": "研究速讲", "type": "中译英", "front": "初步结果表明 [发现]。", "answer": "Our preliminary results suggest that [finding].", "note": "preliminary 可以降低绝对化语气，适合早期或未完全定稿的工作。", "tags": ["pitch", "result"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p017", "category": "研究速讲", "type": "中译英", "front": "一个主要限制是 [限制]。", "answer": "One main limitation is [limitation].", "note": "主动承认限制比回避更可信。", "tags": ["pitch", "limitation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p018", "category": "研究速讲", "type": "中译英", "front": "下一步是 [计划]。", "answer": "The next step is to [plan].", "note": "用于回答 future work，也适合结束讨论。", "tags": ["pitch", "future"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p019", "category": "研究速讲", "type": "中译英", "front": "简单来说，我们想解决 [问题]。", "answer": "In simple terms, we want to address [problem].", "note": "当对方不是同一小领域时，用这句把问题讲简单。", "tags": ["pitch", "simple"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p020", "category": "研究速讲", "type": "中译英", "front": "这项工作的主要贡献是 [贡献]。", "answer": "The main contribution of this work is [contribution].", "note": "贡献最好只说一个，避免现场越讲越散。", "tags": ["pitch", "contribution"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p021", "category": "海报交流", "type": "场景题", "front": "对方站在你的海报前，你想礼貌开场。", "answer": "Hi, would you like to hear a quick overview of my poster?", "note": "先征求对方意愿，不要一上来强行讲完整 poster。", "tags": ["poster", "scenario"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p022", "category": "海报交流", "type": "场景题", "front": "对方有兴趣，你想带他看一遍核心思路。", "answer": "I can walk you through the main idea.", "note": "walk you through = 带你过一遍，poster 场景很自然。", "tags": ["poster", "scenario"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p023", "category": "海报交流", "type": "中译英", "front": "这部分介绍背景和动机。", "answer": "This part introduces the background and motivation.", "note": "指 poster 时可以配合手势；句子保持短。", "tags": ["poster", "structure"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p024", "category": "海报交流", "type": "中译英", "front": "这张图展示了我们的方法。", "answer": "This figure shows our method.", "note": "figure / table / diagram 可以替换使用。", "tags": ["poster", "figure"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p025", "category": "海报交流", "type": "中译英", "front": "这里是主要结果。", "answer": "Here are the main results.", "note": "讲结果时先说位置，再说 takeaway。", "tags": ["poster", "result"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p026", "category": "海报交流", "type": "中译英", "front": "主要结论是……", "answer": "The main takeaway is...", "note": "takeaway = 希望对方带走的核心信息。", "tags": ["poster", "summary"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p027", "category": "海报交流", "type": "中译英", "front": "如果你愿意，我可以先解释这张图。", "answer": "I can start with this figure if you’d like.", "note": "当 poster 信息很多时，先选一张图作为入口。", "tags": ["poster", "figure"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p028", "category": "海报交流", "type": "中译英", "front": "欢迎随时打断我。", "answer": "Please feel free to stop me at any point.", "note": "降低对方插话成本，poster 交流会更自然。", "tags": ["poster", "interaction"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p029", "category": "海报交流", "type": "中译英", "front": "如果你想了解更多，我可以发给你论文或项目页面。", "answer": "If you’d like more details, I can send you the paper or project page.", "note": "不要在默认卡片里放个人链接；发布版只保留通用说法。", "tags": ["poster", "followup"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p030", "category": "海报交流", "type": "中译英", "front": "谢谢你来看我的海报。", "answer": "Thank you for stopping by my poster.", "note": "适合对话结束时使用。", "tags": ["poster", "closing"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p031", "category": "提问与追问", "type": "中译英", "front": "谢谢你的报告。我有一个关于 [部分] 的问题。", "answer": "Thank you for the talk. I have a question about [part].", "note": "公开提问时先感谢，再进入问题。把 [part] 具体化。", "tags": ["question", "talk"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p032", "category": "提问与追问", "type": "中译英", "front": "你能多解释一下 [概念/步骤] 吗？", "answer": "Could you explain [concept/step] a bit more?", "note": "万能追问句；比 “I don’t understand” 更礼貌。", "tags": ["question", "clarify"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p033", "category": "提问与追问", "type": "中译英", "front": "你们是如何定义 [指标/概念] 的？", "answer": "How do you define [metric/concept]?", "note": "适合问定义、指标、任务边界。", "tags": ["question", "definition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p034", "category": "提问与追问", "type": "中译英", "front": "你们是如何评估这个方法的？", "answer": "How do you evaluate this method?", "note": "如果没听懂实验部分，这句很安全。", "tags": ["question", "evaluation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p035", "category": "提问与追问", "type": "中译英", "front": "这个方法和 [已有工作] 相比有什么区别？", "answer": "How does this method compare with [previous work]?", "note": "用于问 novelty；不要把语气说成质疑。", "tags": ["question", "comparison"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p036", "category": "提问与追问", "type": "中译英", "front": "主要限制是什么？", "answer": "What is the main limitation?", "note": "短而有效，适合 poster 或 workshop。", "tags": ["question", "limitation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p037", "category": "提问与追问", "type": "中译英", "front": "你们试过 [设置/实验] 吗？", "answer": "Have you tried [setting/experiment]?", "note": "没有把握时用 Have you tried，比直接质疑更柔和。", "tags": ["question", "experiment"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p038", "category": "提问与追问", "type": "中译英", "front": "这个方法在 [场景] 下还能工作吗？", "answer": "Would this method still work in [scenario]?", "note": "问泛化时用 would，比 will 更礼貌、更假设。", "tags": ["question", "generalization"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p039", "category": "提问与追问", "type": "中译英", "front": "能给一个具体例子吗？", "answer": "Could you give a concrete example?", "note": "听懂概念但不懂直觉时使用。", "tags": ["question", "example"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p040", "category": "提问与追问", "type": "中译英", "front": "代码或数据会公开吗？", "answer": "Will the code or data be available?", "note": "会后复现或继续阅读时常用。", "tags": ["question", "resource"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p041", "category": "提问与追问", "type": "中译英", "front": "你觉得下一步最重要的方向是什么？", "answer": "What do you think is the most important next step?", "note": "适合对话后半段，能自然延展讨论。", "tags": ["question", "future"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p042", "category": "提问与追问", "type": "中译英", "front": "你是否知道我应该看的相关工作？", "answer": "Do you know any related work that I should look at?", "note": "适合向同领域研究者请教；也能建立后续联系。", "tags": ["question", "related-work"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p043", "category": "回答与救场", "type": "中译英", "front": "这是个很好的问题。", "answer": "That’s a great question.", "note": "不是客套废话；它给你 1–2 秒组织语言。", "tags": ["answer", "buffer"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p044", "category": "回答与救场", "type": "中译英", "front": "我先想一下。", "answer": "Let me think for a second.", "note": "卡住时直接说，比沉默更自然。", "tags": ["answer", "buffer"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p045", "category": "回答与救场", "type": "中译英", "front": "简短回答是……", "answer": "The short answer is...", "note": "先给短答，再补细节，避免越说越乱。", "tags": ["answer", "structure"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p046", "category": "回答与救场", "type": "中译英", "front": "在我们的设置中，……", "answer": "In our setting, ...", "note": "用于限定范围，避免把结论说得过大。", "tags": ["answer", "scope"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p047", "category": "回答与救场", "type": "中译英", "front": "关键点是……", "answer": "The key point is that...", "note": "回答问题时先抓核心，不要从背景重新讲起。", "tags": ["answer", "structure"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p048", "category": "回答与救场", "type": "中译英", "front": "举个例子，……", "answer": "For example, ...", "note": "听众听不懂时，例子通常比抽象解释更有效。", "tags": ["answer", "example"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p049", "category": "回答与救场", "type": "中译英", "front": "我们还没有系统测试这一点。", "answer": "We haven’t systematically tested that yet.", "note": "诚实回答未知问题；systematically 表示还没做完整实验。", "tags": ["answer", "safe"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p050", "category": "回答与救场", "type": "中译英", "front": "这是当前工作的一个限制。", "answer": "That is a limitation of the current work.", "note": "承认限制后可以接 future work。", "tags": ["answer", "limitation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p051", "category": "回答与救场", "type": "中译英", "front": "我现在还没有完整答案，但我的直觉是……", "answer": "I don’t have a complete answer yet, but my intuition is that...", "note": "用于不会完全回答但有想法的情况。", "tags": ["answer", "safe"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p052", "category": "回答与救场", "type": "中译英", "front": "我可能理解错了你的问题。", "answer": "I may have misunderstood your question.", "note": "用于回答前或回答后修正，避免答非所问。", "tags": ["answer", "repair"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p053", "category": "回答与救场", "type": "中译英", "front": "我可以会后再和你详细讨论。", "answer": "I can discuss this with you in more detail after the session.", "note": "时间不够或问题太细时使用。", "tags": ["answer", "followup"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p054", "category": "回答与救场", "type": "中译英", "front": "这个建议很有帮助，谢谢。", "answer": "That’s a very helpful suggestion. Thank you.", "note": "收到建议时使用；比只说 thank you 更具体。", "tags": ["answer", "thanks"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p055", "category": "听力救场", "type": "中译英", "front": "抱歉，可以再说一遍吗？", "answer": "Sorry, could you say that again?", "note": "听不懂时立刻修复，不要假装听懂。", "tags": ["listening", "repair"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p056", "category": "听力救场", "type": "中译英", "front": "抱歉，我没有听清最后一部分。", "answer": "Sorry, I didn’t catch the last part.", "note": "比完全重听更高效；适合只漏掉结尾。", "tags": ["listening", "repair"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p057", "category": "听力救场", "type": "中译英", "front": "可以说慢一点吗？", "answer": "Could you speak a bit more slowly?", "note": "国际会议上很正常，尤其是口音较重或现场嘈杂时。", "tags": ["listening", "repair"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p058", "category": "听力救场", "type": "中译英", "front": "可以换一种说法吗？", "answer": "Could you rephrase the question?", "note": "当你听到了词但没懂意思时使用。", "tags": ["listening", "repair"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p059", "category": "听力救场", "type": "中译英", "front": "我确认一下，你是在问 [问题] 吗？", "answer": "Let me make sure I understand. Are you asking about [question]?", "note": "重复确认问题是 Q&A 的核心技巧。", "tags": ["listening", "confirm"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p060", "category": "听力救场", "type": "中译英", "front": "你是在问方法还是实验设置？", "answer": "Are you asking about the method or the experimental setup?", "note": "二选一确认能快速把问题拉回可回答范围。", "tags": ["listening", "confirm"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p061", "category": "听力救场", "type": "中译英", "front": "你能给一个例子吗？", "answer": "Could you give me an example?", "note": "对方问题抽象时使用。", "tags": ["listening", "example"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p062", "category": "听力救场", "type": "中译英", "front": "我不太熟悉这个术语。", "answer": "I’m not very familiar with that term.", "note": "不熟悉术语可以直接说，再请对方解释。", "tags": ["listening", "term"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p063", "category": "口头报告", "type": "中译英", "front": "谢谢主持人的介绍。", "answer": "Thank you for the introduction.", "note": "报告开头固定句，慢速说即可。", "tags": ["oral", "opening"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p064", "category": "口头报告", "type": "中译英", "front": "今天我将介绍我们关于 [主题] 的工作。", "answer": "Today I’m going to present our work on [topic].", "note": "把 [topic] 换成题目中的核心名词短语。", "tags": ["oral", "opening"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p065", "category": "口头报告", "type": "中译英", "front": "我先从研究动机讲起。", "answer": "Let me start with the motivation.", "note": "用于从标题页切到背景页。", "tags": ["oral", "transition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p066", "category": "口头报告", "type": "中译英", "front": "主要挑战是……", "answer": "The main challenge is...", "note": "挑战只讲一个最核心的，避免铺太多。", "tags": ["oral", "motivation"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p067", "category": "口头报告", "type": "中译英", "front": "接下来我会简要介绍方法。", "answer": "Next, I’ll briefly describe our method.", "note": "briefly 提醒自己不要讲太长。", "tags": ["oral", "transition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p068", "category": "口头报告", "type": "中译英", "front": "现在来看实验结果。", "answer": "Now let’s move on to the results.", "note": "move on to 是报告过渡常用表达。", "tags": ["oral", "transition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p069", "category": "口头报告", "type": "中译英", "front": "由于时间有限，我会跳过一些细节。", "answer": "Due to time, I’ll skip some details.", "note": "超时时安全跳过，不要硬讲完所有内容。", "tags": ["oral", "time"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p070", "category": "口头报告", "type": "中译英", "front": "主要结论是……", "answer": "The key takeaway is...", "note": "每个主要部分都可以用 takeaway 收束。", "tags": ["oral", "summary"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p071", "category": "口头报告", "type": "中译英", "front": "总结一下，我们提出了 [方法] 并展示了 [结果]。", "answer": "To summarize, we proposed [method] and showed [result].", "note": "总结页模板：方法 + 结果，各一句。", "tags": ["oral", "closing"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p072", "category": "口头报告", "type": "中译英", "front": "谢谢大家，我很乐意回答问题。", "answer": "Thank you. I’m happy to take questions.", "note": "报告结尾固定句。", "tags": ["oral", "q&a"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p073", "category": "社交与联系", "type": "中译英", "front": "这是你第一次参加这个会议吗？", "answer": "Is this your first time at this conference?", "note": "轻量寒暄，适合茶歇和排队时。", "tags": ["social", "small-talk"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p074", "category": "社交与联系", "type": "中译英", "front": "你的主要研究方向是什么？", "answer": "What is your main research area?", "note": "比直接问具体论文更自然。", "tags": ["social", "research"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p075", "category": "社交与联系", "type": "中译英", "front": "你觉得这个 session 怎么样？", "answer": "How did you find this session?", "note": "这里的 find = 觉得、感受如何。", "tags": ["social", "small-talk"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p076", "category": "社交与联系", "type": "中译英", "front": "你这次有海报或报告吗？", "answer": "Are you presenting a poster or talk here?", "note": "用来打开学术话题。", "tags": ["social", "conference"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p077", "category": "社交与联系", "type": "中译英", "front": "我很想之后继续聊这个话题。", "answer": "I’d love to follow up on this topic later.", "note": "表达兴趣，但不显得强迫。", "tags": ["social", "followup"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p078", "category": "社交与联系", "type": "中译英", "front": "我可以通过邮件或 LinkedIn 联系你吗？", "answer": "May I connect with you by email or on LinkedIn?", "note": "发布版不放个人账号；实际使用时再交换。", "tags": ["social", "contact"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p079", "category": "社交与联系", "type": "中译英", "front": "很高兴和你聊天。", "answer": "It was great talking with you.", "note": "结束对话的万能句。", "tags": ["social", "closing"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p080", "category": "社交与联系", "type": "中译英", "front": "祝你接下来的会议顺利。", "answer": "Enjoy the rest of the conference.", "note": "友好收尾，不需要继续延长对话。", "tags": ["social", "closing"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p081", "category": "学术短语", "type": "短语", "front": "从……角度来看", "answer": "from the perspective of...", "note": "短语卡不要只背；请自己造一句，例如 from the perspective of evaluation。", "tags": ["phrase", "chunk"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p082", "category": "学术短语", "type": "短语", "front": "在我们的设置中", "answer": "in our setting", "note": "用于限定研究条件，避免结论过度泛化。", "tags": ["phrase", "chunk"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p083", "category": "学术短语", "type": "短语", "front": "更具体地说", "answer": "more specifically", "note": "用于从大方向切到方法细节。", "tags": ["phrase", "transition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p084", "category": "学术短语", "type": "短语", "front": "换句话说", "answer": "in other words", "note": "用于重新解释，让对方更容易跟上。", "tags": ["phrase", "transition"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p085", "category": "学术短语", "type": "短语", "front": "举个例子", "answer": "for example", "note": "例子是救场工具；不会解释时先举例。", "tags": ["phrase", "example"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p086", "category": "学术短语", "type": "短语", "front": "主要区别是", "answer": "the main difference is", "note": "回答 comparison / novelty 时常用。", "tags": ["phrase", "comparison"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p087", "category": "学术短语", "type": "短语", "front": "一个可能的解释是", "answer": "one possible explanation is", "note": "表示推测，语气比直接断言更稳。", "tags": ["phrase", "hedge"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p088", "category": "学术短语", "type": "短语", "front": "这取决于……", "answer": "it depends on...", "note": "用于复杂问题，不要硬给绝对答案。", "tags": ["phrase", "hedge"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p089", "category": "学术短语", "type": "短语", "front": "在实践中", "answer": "in practice", "note": "用于从理论切到真实使用场景。", "tags": ["phrase", "practice"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p090", "category": "学术短语", "type": "短语", "front": "未来工作", "answer": "future work", "note": "报告和 Q&A 的高频词组。", "tags": ["phrase", "future"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p091", "category": "常用词汇", "type": "词汇", "front": "研究动机", "answer": "motivation", "note": "说报告时 motivation 通常指“为什么这个问题值得做”。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p092", "category": "常用词汇", "type": "词汇", "front": "贡献", "answer": "contribution", "note": "贡献不是“做了很多事”，而是“相对已有工作的新增价值”。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p093", "category": "常用词汇", "type": "词汇", "front": "基线方法", "answer": "baseline", "note": "baseline 是比较对象，不一定是最强方法。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p094", "category": "常用词汇", "type": "词汇", "front": "数据集", "answer": "dataset", "note": "注意 dataset 是一个词，不是 data set。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p095", "category": "常用词汇", "type": "词汇", "front": "评估", "answer": "evaluation", "note": "可搭配 evaluation metric、evaluation setup、evaluation results。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p096", "category": "常用词汇", "type": "词汇", "front": "假设", "answer": "assumption", "note": "被问 assumption 时，先说明方法成立的条件。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p097", "category": "常用词汇", "type": "词汇", "front": "局限", "answer": "limitation", "note": "主动讲 limitation 可以显得更可信。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p098", "category": "常用词汇", "type": "词汇", "front": "泛化能力", "answer": "generalization", "note": "常用于问方法是否适用于其他数据、任务或场景。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p099", "category": "常用词汇", "type": "词汇", "front": "稳健性", "answer": "robustness", "note": "常用于噪声、分布变化、不同设置下是否稳定。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}, {"id": "p100", "category": "常用词汇", "type": "词汇", "front": "消融实验", "answer": "ablation study", "note": "ablation study 用来验证每个组件是否有贡献。", "tags": ["vocab"], "due": 0, "interval": 0, "ease": 2.5, "reps": 0, "lapses": 0, "created": "2026-06-23T00:00:00.000000Z"}]</script>
+  <script>
+    const STORAGE_KEY = 'conference_english_public_cards_v7';
+    const SETTINGS_KEY = 'conference_english_public_settings_v7';
+    const MS_PER_DAY = 86400000;
+    const defaultCards = JSON.parse(document.getElementById('defaultCards').textContent);
+    const TYPE_OPTIONS = ['中译英', '场景题', '短语', '词汇', '自定义'];
+    const CATEGORY_OPTIONS = ['自我介绍', '研究速讲', '海报交流', '提问与追问', '回答与救场', '听力救场', '口头报告', '社交与联系', '学术短语', '常用词汇', '自定义'];
+    const TAG_NAMES = { intro: '介绍', research: '研究', poster: '海报', question: '提问', answer: '回答', repair: '救场', oral: '报告', listening: '听力', scenario: '场景', social: '社交', vocab: '词汇', chunk: '短语', pitch: '陈述', safe: '安全表达', transition: '过渡' };
+
+    let deck = [];
+    let settings = {
+      view: 'study', search: '', category: 'all', type: 'all', dueOnly: false, selectedId: null,
+      showAnswer: false, editOpen: false, libraryEditOpen: false,
+      ttsVoiceURI: '', ttsRate: 0.9, ttsPitch: 1, autoSpeakAnswer: false,
+      studyOrder: 'dueFirst', newLimit: 0
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const els = {
+      navTabs: $$('[data-view-tab]'), studyView: $('#studyView'), libraryView: $('#libraryView'), settingsView: $('#settingsView'),
+      deckMeta: $('#deckMeta'), deckNew: $('#deckNew'), deckDue: $('#deckDue'), deckToday: $('#deckToday'),
+      statTotal: $('#statTotal'), statNew: $('#statNew'), statDue: $('#statDue'), statToday: $('#statToday'),
+      studyMeta: $('#studyMeta'), promptText: $('#promptText'), answerBox: $('#answerBox'), answerText: $('#answerText'), noteBox: $('#noteBox'), noteText: $('#noteText'),
+      revealBtn: $('#revealBtn'), speakPromptBtn: $('#speakPromptBtn'), speakAnswerBtn: $('#speakAnswerBtn'), copyAnswerBtn: $('#copyAnswerBtn'), nextBtn: $('#nextBtn'), gradeRow: $('#gradeRow'), toggleEditBtn: $('#toggleEditBtn'),
+      studyEditor: $('#studyEditor'), libraryEditor: $('#libraryEditor'), libraryEditToggleBtn: $('#libraryEditToggleBtn'), libraryList: $('#libraryList'),
+      searchInput: $('#searchInput'), categoryFilter: $('#categoryFilter'), typeFilter: $('#typeFilter'), dueOnly: $('#dueOnly'),
+      saveStudyEditBtn: $('#saveStudyEditBtn'), saveLibraryEditBtn: $('#saveLibraryEditBtn'), deleteStudyCardBtn: $('#deleteStudyCardBtn'), deleteLibraryCardBtn: $('#deleteLibraryCardBtn'),
+      addCardTopBtn: $('#addCardTopBtn'), exportBtn: $('#exportBtn'), importBtn: $('#importBtn'), importFile: $('#importFile'), resetBtn: $('#resetBtn'), resetBtn2: $('#resetBtn2'), resetProgressBtn: $('#resetProgressBtn'),
+      voiceSelect: $('#voiceSelect'), rateRange: $('#rateRange'), rateValue: $('#rateValue'), pitchRange: $('#pitchRange'), pitchValue: $('#pitchValue'), autoSpeakAnswer: $('#autoSpeakAnswer'), testVoiceBtn: $('#testVoiceBtn'), studyOrderSelect: $('#studyOrderSelect'), newLimitSelect: $('#newLimitSelect'),
+      toast: $('#toast')
+    };
+
+    function today() { return Math.floor(Date.now() / MS_PER_DAY); }
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function escapeHTML(value) { return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'", '&#039;'); }
+    function normalizeCard(card, index = 0) {
+      return {
+        id: card.id || `c-${Date.now()}-${index}`,
+        category: String(card.category || '未分类'),
+        type: String(card.type || '中译英'),
+        front: String(card.front || ''),
+        answer: String(card.answer || ''),
+        note: String(card.note || ''),
+        tags: Array.isArray(card.tags) ? card.tags.map(String) : String(card.tags || '').split(/[，,\s]+/).filter(Boolean),
+        due: Number.isFinite(Number(card.due)) ? Number(card.due) : 0,
+        interval: Number.isFinite(Number(card.interval)) ? Number(card.interval) : 0,
+        ease: Number.isFinite(Number(card.ease)) ? Number(card.ease) : 2.5,
+        reps: Number.isFinite(Number(card.reps)) ? Number(card.reps) : 0,
+        lapses: Number.isFinite(Number(card.lapses)) ? Number(card.lapses) : 0,
+        lastReviewed: Number.isFinite(Number(card.lastReviewed)) ? Number(card.lastReviewed) : null,
+        introducedOn: Number.isFinite(Number(card.introducedOn)) ? Number(card.introducedOn) : null,
+        created: card.created || new Date().toISOString()
+      };
+    }
+    function notify(message) { els.toast.textContent = message; els.toast.classList.add('is-visible'); clearTimeout(notify.timer); notify.timer = setTimeout(() => els.toast.classList.remove('is-visible'), 2200); }
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        deck = (raw ? JSON.parse(raw) : clone(defaultCards)).map(normalizeCard);
+      } catch (error) { deck = clone(defaultCards).map(normalizeCard); }
+      try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (error) {}
+      if (!settings.selectedId && deck[0]) settings.selectedId = deck[0].id;
+    }
+    function saveDeck() { localStorage.setItem(STORAGE_KEY, JSON.stringify(deck)); }
+    function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+
+    function isNew(card) { return !Number(card.reps || 0); }
+    function isDueReview(card) { return !isNew(card) && Number(card.due || 0) <= today(); }
+    function isFuture(card) { return !isNew(card) && Number(card.due || 0) > today(); }
+    function cardStatus(card) {
+      if (isNew(card)) return { text: '新卡', cls: 'new' };
+      if (isDueReview(card)) return { text: '到期', cls: 'due' };
+      return { text: `${Math.max(0, Number(card.due || 0) - today())} 天后`, cls: 'future' };
+    }
+    function tagName(tag) { return TAG_NAMES[tag] || tag; }
+    function textHaystack(card) { return [card.front, card.answer, card.note, card.category, card.type, ...(card.tags || [])].join(' ').toLowerCase(); }
+    function filteredLibraryCards() {
+      const search = settings.search.trim().toLowerCase();
+      return deck.filter(card => {
+        if (settings.category !== 'all' && card.category !== settings.category) return false;
+        if (settings.type !== 'all' && card.type !== settings.type) return false;
+        if (settings.dueOnly && !isDueReview(card)) return false;
+        if (search && !textHaystack(card).includes(search)) return false;
+        return true;
+      }).sort(sortCards);
+    }
+    function studyCards() {
+      const sorted = deck.slice().sort(sortCards);
+      const reviews = sorted.filter(isDueReview);
+      const future = sorted.filter(isFuture);
+      let newCards = sorted.filter(isNew);
+      if (settings.newLimit > 0) {
+        const introducedToday = deck.filter(card => Number(card.introducedOn) === today()).length;
+        const remainingNew = Math.max(0, settings.newLimit - introducedToday);
+        newCards = newCards.slice(0, remainingNew);
+      }
+      const active = settings.studyOrder === 'newFirst' ? newCards.concat(reviews) : reviews.concat(newCards);
+      return active.length ? active : future;
+    }
+    function sortCards(a, b) {
+      if (settings.studyOrder === 'original') return deck.indexOf(a) - deck.indexOf(b);
+      const score = (card) => {
+        if (settings.studyOrder === 'newFirst') {
+          if (isNew(card)) return 0;
+          if (isDueReview(card)) return 1;
+          return 2;
+        }
+        if (isDueReview(card)) return 0;
+        if (isNew(card)) return 1;
+        return 2;
+      };
+      return score(a) - score(b) || Number(a.due || 0) - Number(b.due || 0) || deck.indexOf(a) - deck.indexOf(b);
+    }
+    function getSelectedCard() {
+      const cards = settings.view === 'library' ? filteredLibraryCards() : studyCards();
+      let card = deck.find(item => item.id === settings.selectedId);
+      if (!card || !cards.some(item => item.id === card.id)) {
+        card = cards[0] || null;
+        settings.selectedId = card ? card.id : null;
+      }
+      return card;
+    }
+    function renderSelect(select, values, active, allLabel) {
+      select.innerHTML = `<option value="all">${allLabel}</option>` + values.map(value => `<option value="${escapeHTML(value)}">${escapeHTML(value)}</option>`).join('');
+      select.value = values.includes(active) ? active : 'all';
+    }
+    function renderSummary() {
+      const total = deck.length;
+      const newCount = deck.filter(isNew).length;
+      const dueCount = deck.filter(isDueReview).length;
+      const todayCount = deck.filter(card => Number(card.lastReviewed) === today()).length;
+      els.deckMeta.textContent = `总共 ${total} 张卡片`;
+      els.deckNew.textContent = newCount;
+      els.deckDue.textContent = dueCount;
+      els.deckToday.textContent = todayCount;
+      els.statTotal.textContent = total;
+      els.statNew.textContent = newCount;
+      els.statDue.textContent = dueCount;
+      els.statToday.textContent = todayCount;
+    }
+    function renderStudy() {
+      const cards = studyCards();
+      const card = getSelectedCard();
+      if (!card) {
+        els.studyMeta.innerHTML = '<span>没有卡片</span>';
+        els.promptText.textContent = '没有可学习的卡片';
+        els.answerBox.classList.remove('is-visible');
+        els.gradeRow.classList.remove('is-visible');
+        return;
+      }
+      const index = cards.findIndex(item => item.id === card.id) + 1;
+      const status = cardStatus(card);
+      const tags = (card.tags || []).slice(0, 3).map(tag => `<span class="tag">${escapeHTML(tagName(tag))}</span>`).join('');
+      els.studyMeta.innerHTML = `<span>第 ${index || 1} / ${cards.length} 张</span><span class="tag ${status.cls}">${status.text}</span><span class="tag">${escapeHTML(card.category)}</span><span class="tag">${escapeHTML(card.type)}</span>${tags}`;
+      els.promptText.textContent = card.front || '未填写题面';
+      els.promptText.classList.toggle('long', (card.front || '').length > 34);
+      els.answerText.textContent = card.answer || '未填写答案';
+      els.noteText.textContent = card.note || '';
+      els.answerBox.classList.toggle('is-visible', settings.showAnswer);
+      els.noteBox.classList.toggle('is-visible', settings.showAnswer && Boolean(card.note));
+      els.gradeRow.classList.toggle('is-visible', settings.showAnswer);
+      els.revealBtn.textContent = settings.showAnswer ? '收起答案' : '显示答案';
+      els.speakAnswerBtn.style.display = settings.showAnswer ? 'inline-flex' : 'none';
+      els.copyAnswerBtn.style.display = settings.showAnswer ? 'inline-flex' : 'none';
+      els.toggleEditBtn.textContent = settings.editOpen ? '关闭编辑' : '开启编辑';
+      els.studyEditor.classList.toggle('is-visible', settings.editOpen);
+      if (settings.editOpen) fillEditor('study', card);
+    }
+    function renderLibrary() {
+      const categories = [...new Set(deck.map(card => card.category))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+      const types = [...new Set(deck.map(card => card.type))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+      renderSelect(els.categoryFilter, categories, settings.category, '全部分类');
+      renderSelect(els.typeFilter, types, settings.type, '全部类型');
+      els.searchInput.value = settings.search;
+      els.dueOnly.checked = Boolean(settings.dueOnly);
+      els.libraryEditToggleBtn.textContent = settings.libraryEditOpen ? '关闭编辑' : '开启编辑';
+      els.libraryEditor.classList.toggle('is-visible', settings.libraryEditOpen);
+      const cards = filteredLibraryCards();
+      if (!cards.length) {
+        els.libraryList.innerHTML = '<div class="empty">没有匹配的卡片。</div>';
+        return;
+      }
+      els.libraryList.innerHTML = cards.map(card => {
+        const status = cardStatus(card);
+        const selected = card.id === settings.selectedId ? 'is-selected' : '';
+        const tagText = (card.tags || []).map(tagName).join('、') || '无标签';
+        return `<button class="library-row ${selected}" data-card-id="${escapeHTML(card.id)}"><div class="row-id">${escapeHTML(card.id)}</div><div class="row-main"><div class="row-title">${escapeHTML(card.front || '未填写题面')}</div><div class="row-sub">${escapeHTML(tagText)}</div></div><div class="row-main"><div class="row-title">${escapeHTML(card.answer || '未填写答案')}</div><div class="row-sub">${escapeHTML(card.note || '')}</div></div><div class="row-sub">${escapeHTML(card.category)}</div><div class="row-sub">${escapeHTML(card.type)}</div><div><span class="tag ${status.cls}">${status.text}</span></div></button>`;
+      }).join('');
+      if (settings.libraryEditOpen) {
+        const card = getSelectedCard();
+        if (card) fillEditor('library', card);
+      }
+    }
+    function renderEditorChoice(root, field, options, value) {
+      const select = root.querySelector(`[data-field="${field}Select"]`);
+      const custom = root.querySelector(`[data-field="${field}Custom"]`);
+      const exists = options.includes(value);
+      const all = exists ? options : options.concat(value);
+      select.innerHTML = all.map(opt => `<option value="${escapeHTML(opt)}">${escapeHTML(opt)}</option>`).join('');
+      select.value = exists ? value : value;
+      const isCustom = select.value === '自定义' || !options.includes(value);
+      custom.classList.toggle('is-visible', isCustom);
+      custom.value = isCustom && value !== '自定义' ? value : '';
+      select.onchange = () => custom.classList.toggle('is-visible', select.value === '自定义');
+    }
+    function fillEditor(which, card) {
+      const root = document.querySelector(`[data-editor="${which}"]`);
+      renderEditorChoice(root, 'category', CATEGORY_OPTIONS, card.category);
+      renderEditorChoice(root, 'type', TYPE_OPTIONS, card.type);
+      root.querySelector('[data-field="front"]').value = card.front;
+      root.querySelector('[data-field="answer"]').value = card.answer;
+      root.querySelector('[data-field="note"]').value = card.note;
+      root.querySelector('[data-field="tags"]').value = (card.tags || []).join(', ');
+      const interval = String([0,1,2,3,7,14,30,90].includes(Number(card.interval)) ? Number(card.interval) : 0);
+      root.querySelector('[data-field="interval"]').value = interval;
+    }
+    function readEditor(which) {
+      const root = document.querySelector(`[data-editor="${which}"]`);
+      const readChoice = (name) => {
+        const select = root.querySelector(`[data-field="${name}Select"]`);
+        const custom = root.querySelector(`[data-field="${name}Custom"]`);
+        return select.value === '自定义' ? (custom.value.trim() || '自定义') : select.value;
+      };
+      return {
+        category: readChoice('category'),
+        type: readChoice('type'),
+        front: root.querySelector('[data-field="front"]').value.trim(),
+        answer: root.querySelector('[data-field="answer"]').value.trim(),
+        note: root.querySelector('[data-field="note"]').value.trim(),
+        tags: root.querySelector('[data-field="tags"]').value.split(/[，,\s]+/).map(t => t.trim()).filter(Boolean),
+        interval: Number.parseInt(root.querySelector('[data-field="interval"]').value || '0', 10)
+      };
+    }
+    function applyEdit(which) {
+      const card = getSelectedCard();
+      if (!card) return;
+      const data = readEditor(which);
+      Object.assign(card, data);
+      card.due = today() + Math.max(0, data.interval || 0);
+      saveDeck();
+      notify('已保存修改');
+      render();
+    }
+    function renderSettings() {
+      els.rateRange.value = settings.ttsRate;
+      els.rateValue.textContent = Number(settings.ttsRate).toFixed(2);
+      els.pitchRange.value = settings.ttsPitch;
+      els.pitchValue.textContent = Number(settings.ttsPitch).toFixed(2);
+      els.autoSpeakAnswer.checked = Boolean(settings.autoSpeakAnswer);
+      els.studyOrderSelect.value = settings.studyOrder;
+      els.newLimitSelect.value = String(settings.newLimit || 0);
+      populateVoices();
+    }
+    function render() {
+      renderSummary();
+      renderStudy();
+      renderLibrary();
+      renderSettings();
+      setView(settings.view, false);
+      saveSettings();
+    }
+    function setView(view, persist = true) {
+      settings.view = view;
+      els.navTabs.forEach(button => button.classList.toggle('is-active', button.dataset.viewTab === view));
+      els.studyView.classList.toggle('is-active', view === 'study');
+      els.libraryView.classList.toggle('is-active', view === 'library');
+      els.settingsView.classList.toggle('is-active', view === 'settings');
+      if (persist) saveSettings();
+    }
+    function setSelected(id, goStudy = false) {
+      settings.selectedId = id;
+      settings.showAnswer = false;
+      if (goStudy) settings.view = 'study';
+      render();
+    }
+    function nextCard() {
+      const cards = studyCards();
+      if (!cards.length) return;
+      const idx = cards.findIndex(card => card.id === settings.selectedId);
+      const next = cards[(idx + 1 + cards.length) % cards.length];
+      setSelected(next.id);
+    }
+    function gradeCurrent(grade) {
+      if (!settings.showAnswer) { notify('先显示答案，再记录掌握程度'); return; }
+      const card = getSelectedCard();
+      if (!card) return;
+      const oldInterval = Number(card.interval || 0);
+      const oldEase = Number(card.ease || 2.5);
+      const wasNew = isNew(card);
+      let interval;
+      if (wasNew) {
+        card.introducedOn = today();
+        if (grade === 'again') interval = 0;
+        if (grade === 'hard') interval = 1;
+        if (grade === 'good') interval = 2;
+        if (grade === 'easy') interval = 4;
+      } else {
+        if (grade === 'again') interval = 0;
+        if (grade === 'hard') interval = Math.max(1, Math.round(Math.max(1, oldInterval) * 1.2));
+        if (grade === 'good') interval = Math.max(2, Math.round(Math.max(1, oldInterval) * oldEase));
+        if (grade === 'easy') interval = Math.max(4, Math.round(Math.max(1, oldInterval) * (oldEase + 0.5)));
+      }
+      if (grade === 'again') { card.ease = Math.max(1.3, oldEase - 0.2); card.lapses = Number(card.lapses || 0) + 1; }
+      if (grade === 'hard') card.ease = Math.max(1.3, oldEase - 0.05);
+      if (grade === 'easy') card.ease = Math.min(3.2, oldEase + 0.08);
+      card.interval = interval;
+      card.due = today() + interval;
+      card.reps = Number(card.reps || 0) + 1;
+      card.lastReviewed = today();
+      settings.showAnswer = false;
+      saveDeck();
+      notify('已记录');
+      nextCard();
+    }
+    function getSpeakText(kind) {
+      const card = getSelectedCard();
+      if (!card) return '';
+      return kind === 'answer' ? card.answer : card.front;
+    }
+    function populateVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const current = settings.ttsVoiceURI || '';
+      const options = ['<option value="">使用浏览器默认声音</option>'].concat(
+        voices.map(voice => `<option value="${escapeHTML(voice.voiceURI)}">${escapeHTML(voice.name)} · ${escapeHTML(voice.lang)}</option>`)
+      );
+      const old = els.voiceSelect.value;
+      els.voiceSelect.innerHTML = options.join('');
+      els.voiceSelect.value = voices.some(v => v.voiceURI === current) ? current : (voices.some(v => v.voiceURI === old) ? old : '');
+    }
+    function speak(text) {
+      const clean = String(text || '').trim();
+      if (!clean) return;
+      if (!('speechSynthesis' in window)) { notify('当前浏览器不支持朗读，建议使用 Chrome 或 Edge。'); return; }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.lang = /[A-Za-z]/.test(clean) ? 'en-US' : 'zh-CN';
+      utterance.rate = Number(settings.ttsRate || 0.9);
+      utterance.pitch = Number(settings.ttsPitch || 1);
+      const voices = window.speechSynthesis.getVoices();
+      const selected = voices.find(voice => voice.voiceURI === settings.ttsVoiceURI);
+      const fallback = voices.find(voice => utterance.lang === 'en-US' ? (voice.lang || '').toLowerCase().startsWith('en') : (voice.lang || '').toLowerCase().startsWith('zh'));
+      utterance.voice = selected || fallback || null;
+      window.speechSynthesis.speak(utterance);
+    }
+    async function copyAnswer() {
+      const card = getSelectedCard();
+      if (!card) return;
+      try { await navigator.clipboard.writeText(card.answer || ''); notify('已复制答案'); }
+      catch (error) { notify('复制失败，请手动复制'); }
+    }
+    function addCard() {
+      const card = normalizeCard({ id: `custom-${Date.now()}`, category: '自定义', type: '中译英', front: '新的题面', answer: 'New answer.', note: '', tags: ['custom'], due: 0, interval: 0, ease: 2.5, reps: 0, lapses: 0, created: new Date().toISOString() });
+      deck.unshift(card);
+      settings.selectedId = card.id;
+      settings.view = 'library';
+      settings.libraryEditOpen = true;
+      settings.showAnswer = false;
+      saveDeck();
+      notify('已新增卡片');
+      render();
+    }
+    function deleteCurrentCard() {
+      const card = getSelectedCard();
+      if (!card) return;
+      if (!window.confirm('确定删除这张卡片吗？建议先导出数据备份。')) return;
+      deck = deck.filter(item => item.id !== card.id);
+      settings.selectedId = deck[0]?.id || null;
+      saveDeck();
+      notify('已删除卡片');
+      render();
+    }
+    function exportDeck() {
+      const payload = { exportedAt: new Date().toISOString(), cards: deck };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `学术会议英语记忆卡-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      notify('已导出数据');
+    }
+    function importDeck(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(String(reader.result || ''));
+          const imported = Array.isArray(parsed) ? parsed : parsed.cards;
+          if (!Array.isArray(imported)) throw new Error('invalid');
+          deck = imported.map(normalizeCard);
+          settings.selectedId = deck[0]?.id || null;
+          settings.showAnswer = false;
+          saveDeck();
+          notify(`已导入 ${deck.length} 张卡片`);
+          render();
+        } catch (error) { notify('导入失败：文件格式不正确'); }
+        finally { els.importFile.value = ''; }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+    function resetDeck() {
+      if (!window.confirm('确定恢复默认卡片吗？当前本地修改会被覆盖。建议先导出数据备份。')) return;
+      deck = clone(defaultCards).map(normalizeCard);
+      settings.selectedId = deck[0]?.id || null;
+      settings.showAnswer = false;
+      saveDeck();
+      notify('已恢复默认卡片');
+      render();
+    }
+    function resetProgress() {
+      if (!window.confirm('确定只重置学习进度吗？卡片内容会保留。')) return;
+      deck.forEach(card => { card.due = 0; card.interval = 0; card.ease = 2.5; card.reps = 0; card.lapses = 0; card.lastReviewed = null; });
+      settings.selectedId = deck[0]?.id || null;
+      settings.showAnswer = false;
+      saveDeck();
+      notify('已重置学习进度');
+      render();
+    }
+    function bindEvents() {
+      els.navTabs.forEach(button => button.addEventListener('click', () => setView(button.dataset.viewTab)));
+      els.revealBtn.addEventListener('click', () => {
+        settings.showAnswer = !settings.showAnswer;
+        renderStudy(); saveSettings();
+        if (settings.showAnswer && settings.autoSpeakAnswer) speak(getSpeakText('answer'));
+      });
+      els.speakPromptBtn.addEventListener('click', () => speak(getSpeakText('prompt')));
+      els.speakAnswerBtn.addEventListener('click', () => speak(getSpeakText('answer')));
+      els.copyAnswerBtn.addEventListener('click', copyAnswer);
+      els.nextBtn.addEventListener('click', nextCard);
+      $$('.grade').forEach(button => button.addEventListener('click', () => gradeCurrent(button.dataset.grade)));
+      els.toggleEditBtn.addEventListener('click', () => { settings.editOpen = !settings.editOpen; renderStudy(); saveSettings(); });
+      els.saveStudyEditBtn.addEventListener('click', () => applyEdit('study'));
+      els.deleteStudyCardBtn.addEventListener('click', deleteCurrentCard);
+      els.libraryEditToggleBtn.addEventListener('click', () => { settings.libraryEditOpen = !settings.libraryEditOpen; renderLibrary(); saveSettings(); });
+      els.saveLibraryEditBtn.addEventListener('click', () => applyEdit('library'));
+      els.deleteLibraryCardBtn.addEventListener('click', deleteCurrentCard);
+      els.libraryList.addEventListener('click', (event) => {
+        const row = event.target.closest('[data-card-id]');
+        if (!row) return;
+        settings.selectedId = row.dataset.cardId;
+        settings.showAnswer = false;
+        if (!settings.libraryEditOpen) settings.view = 'study';
+        render();
+      });
+      els.searchInput.addEventListener('input', event => { settings.search = event.target.value; renderLibrary(); saveSettings(); });
+      els.categoryFilter.addEventListener('change', event => { settings.category = event.target.value; settings.selectedId = null; renderLibrary(); saveSettings(); });
+      els.typeFilter.addEventListener('change', event => { settings.type = event.target.value; settings.selectedId = null; renderLibrary(); saveSettings(); });
+      els.dueOnly.addEventListener('change', event => { settings.dueOnly = event.target.checked; settings.selectedId = null; renderLibrary(); saveSettings(); });
+      els.addCardTopBtn.addEventListener('click', addCard);
+      els.exportBtn.addEventListener('click', exportDeck);
+      els.importBtn.addEventListener('click', () => els.importFile.click());
+      els.importFile.addEventListener('change', event => importDeck(event.target.files[0]));
+      els.resetBtn.addEventListener('click', resetDeck);
+      els.resetBtn2.addEventListener('click', resetDeck);
+      els.resetProgressBtn.addEventListener('click', resetProgress);
+      els.voiceSelect.addEventListener('change', event => { settings.ttsVoiceURI = event.target.value; saveSettings(); });
+      els.rateRange.addEventListener('input', event => { settings.ttsRate = Number(event.target.value); els.rateValue.textContent = settings.ttsRate.toFixed(2); saveSettings(); });
+      els.pitchRange.addEventListener('input', event => { settings.ttsPitch = Number(event.target.value); els.pitchValue.textContent = settings.ttsPitch.toFixed(2); saveSettings(); });
+      els.autoSpeakAnswer.addEventListener('change', event => { settings.autoSpeakAnswer = event.target.checked; saveSettings(); });
+      els.studyOrderSelect.addEventListener('change', event => { settings.studyOrder = event.target.value; saveSettings(); render(); });
+      els.newLimitSelect.addEventListener('change', event => { settings.newLimit = Number(event.target.value); saveSettings(); render(); });
+      els.testVoiceBtn.addEventListener('click', () => speak('It was great talking with you. I would love to follow up later.'));
+      document.addEventListener('keydown', event => {
+        const active = event.target;
+        const typing = active && ['INPUT','TEXTAREA','SELECT'].includes(active.tagName);
+        if (typing) return;
+        if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); els.revealBtn.click(); }
+        if (event.key.toLowerCase() === 'n') nextCard();
+        if (event.key.toLowerCase() === 'e') { settings.editOpen = !settings.editOpen; renderStudy(); saveSettings(); }
+        if (['1','2','3','4'].includes(event.key)) {
+          const map = { '1': 'again', '2': 'hard', '3': 'good', '4': 'easy' };
+          gradeCurrent(map[event.key]);
+        }
+      });
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => populateVoices();
+      }
+    }
+
+    load();
+    bindEvents();
+    render();
+  </script>
+</body>
+</html>
